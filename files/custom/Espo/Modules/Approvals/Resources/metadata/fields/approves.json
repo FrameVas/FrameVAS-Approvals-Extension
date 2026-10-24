@@ -1,0 +1,130 @@
+{
+    "view": "approvals:views/fields/approves",
+    "params": [
+        {
+            "name": "required",
+            "type": "bool",
+            "default": false
+        },
+        {
+            "name": "approvalMode",
+            "type": "enum",
+            "options": [
+                "parallel",
+                "stages"
+            ],
+            "default": "parallel",
+            "translation": "Admin.options.approvesApprovalMode",
+            "tooltip": true
+        },
+        {
+            "name": "approveCommentDisabled",
+            "type": "bool",
+            "default": false,
+            "tooltip": true
+        },
+        {
+            "name": "declineCommentDisabled",
+            "type": "bool",
+            "default": false,
+            "tooltip": true
+        },
+        {
+            "name": "actionsPosition",
+            "type": "enum",
+            "options": [
+                "bottom",
+                "top",
+                "header"
+            ],
+            "default": "bottom",
+            "translation": "Admin.options.approvesActionsPosition",
+            "tooltip": true
+        },
+        {
+            "name": "listDisplay",
+            "type": "enum",
+            "options": [
+                "summary",
+                "approvers",
+                "both"
+            ],
+            "default": "summary",
+            "translation": "Admin.options.approvesListDisplay",
+            "tooltip": true
+        },
+        {
+            "name": "approvalsAudited",
+            "type": "bool",
+            "default": false,
+            "tooltip": true
+        },
+        {
+            "name": "readOnly",
+            "type": "bool"
+        },
+        {
+            "name": "readOnlyAfterCreate",
+            "type": "bool"
+        }
+    ],
+    "fields": {
+        "status": {
+            "type": "enum",
+            "options": [
+                "",
+                "Pending",
+                "Approved",
+                "Declined"
+            ],
+            "style": {
+                "Pending": "warning",
+                "Approved": "success",
+                "Declined": "danger"
+            },
+            "displayAsLabel": true,
+            "translation": "Global.options.approvesStatus",
+            "readOnly": true,
+            "default": "",
+            "layoutMassUpdateDisabled": true,
+            "customizationRequiredDisabled": true,
+            "customizationOptionsDisabled": true,
+            "customizationOptionsReferenceDisabled": true,
+            "customizationDefaultDisabled": true,
+            "customizationReadOnlyDisabled": true,
+            "customizationIsSortedDisabled": true
+        },
+        "index": {
+            "type": "text",
+            "utility": true,
+            "readOnly": true,
+            "default": "",
+            "layoutAvailabilityList": [],
+            "layoutListDisabled": true,
+            "layoutDetailDisabled": true,
+            "layoutFiltersDisabled": true,
+            "layoutMassUpdateDisabled": true,
+            "layoutDefaultSidePanelDisabled": true,
+            "textFilterDisabled": true,
+            "importDisabled": true,
+            "exportDisabled": true,
+            "customizationDisabled": true
+        }
+    },
+    "validatorClassName": "Espo\\Classes\\FieldValidators\\JsonArrayType",
+    "validationList": [
+        "array",
+        "required"
+    ],
+    "mandatoryValidationList": [
+        "array"
+    ],
+    "filter": true,
+    "notSortable": true,
+    "notMergeable": true,
+    "fieldDefs": {
+        "type": "jsonArray"
+    },
+    "default": [],
+    "hookClassName": "Espo\\Modules\\Approvals\\Classes\\FieldManager\\ApprovesHook"
+}

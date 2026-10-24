@@ -1,0 +1,7 @@
+[
+    {
+        "route": "/Approves/:entityType/:id/:field/resolve",
+        "method": "post",
+        "actionClassName": "Espo\\Modules\\Approvals\\Api\\PostResolve"
+    }
+]

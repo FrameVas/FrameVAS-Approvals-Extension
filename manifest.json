@@ -1,0 +1,13 @@
+{
+    "name": "FrameVAS - Approvals Lite",
+    "description": "Adds the 'Approves' field type: a list of users who must approve a record, with Approve/Decline actions, notifications and an overall approval status. English and Ukrainian included.",
+    "author": "FrameVAS - Artem Vasylenko",
+    "version": "1.0.2",
+    "acceptableVersions": [
+        ">=9.0.0"
+    ],
+    "php": [
+        ">=8.3"
+    ],
+    "releaseDate": "2026-10-24"
+    }

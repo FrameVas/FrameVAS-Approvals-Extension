@@ -1,0 +1,29 @@
+{
+    "fieldTypes": {
+        "approves": "Погодження"
+    },
+    "fields": {
+        "approveCommentDisabled": "Приховати коментар при погодженні",
+        "declineCommentDisabled": "Приховати коментар при відхиленні",
+        "listDisplay": "Відображення у списку",
+        "approvalMode": "Режим погодження",
+        "approvalsAudited": "Аудит",
+        "actionsPosition": "Розташування кнопок «Погодити/Відхилити»"
+    },
+    "options": {
+        "approvesListDisplay": {
+            "summary": "Підсумок",
+            "approvers": "Погоджувачі",
+            "both": "Підсумок + погоджувачі"
+        },
+        "approvesApprovalMode": {
+            "parallel": "Паралельно",
+            "stages": "Етапи"
+        },
+        "approvesActionsPosition": {
+            "bottom": "Під списком погоджувачів",
+            "top": "Над списком погоджувачів",
+            "header": "Заголовок запису (біля «Змінити»)"
+        }
+    }
+}

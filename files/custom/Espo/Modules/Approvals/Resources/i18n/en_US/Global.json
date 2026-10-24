@@ -1,0 +1,59 @@
+{
+    "labels": {
+        "Approve": "Approve",
+        "Decline": "Decline",
+        "Add Approver": "Add Approver",
+        "Waiting": "Waiting",
+        "No approvers": "No approvers",
+        "Comment": "Comment",
+        "Add Stage": "Add Stage",
+        "Done": "Done",
+        "Current": "Current",
+        "Added": "Added",
+        "Removed": "Removed",
+        "Moved": "Moved",
+        "Me": "Me",
+        "Approver": "Approver",
+        "Stage": "Stage",
+        "Status": "Status",
+        "Decision Date": "Decision Date",
+        "Signature": "Signature"
+    },
+    "messages": {
+        "approvesRequested": "Your approval is needed: {entityType} {entity}",
+        "approvesApproved": "{user} approved {entityType} {entity}",
+        "approvesDeclined": "{user} declined {entityType} {entity}",
+        "approvesNotAllowed": "You can't approve or decline this record now.",
+        "approvesDone": "Your decision is saved.",
+        "approvesConfirmApprove": "Approve this record?",
+        "approvesConfirmDecline": "Decline this record?",
+        "approvesMore": "+{count} more",
+        "approvesStage": "Stage {number}",
+        "approvesMoveToPreviousStage": "Move to previous stage",
+        "approvesMoveToNextStage": "Move to next stage"
+    },
+    "options": {
+        "approvesStatus": {
+            "": "None",
+            "Pending": "Pending",
+            "Approved": "Approved",
+            "Declined": "Declined"
+        },
+        "approvesSearchType": {
+            "anyOf": "Includes Any Of",
+            "allOf": "Includes All Of",
+            "noneOf": "Doesn't Include",
+            "approvedBy": "Approved By",
+            "declinedBy": "Declined By",
+            "waitingFor": "Waiting For"
+        }
+    },
+    "streamMessages": {
+        "approvesApprove": "{user} approved {entityType} {entity}",
+        "approvesApproveThis": "{user} approved this {entityType}",
+        "approvesDecline": "{user} declined {entityType} {entity}",
+        "approvesDeclineThis": "{user} declined this {entityType}",
+        "approvesUpdate": "{user} updated approvers of {entityType} {entity}",
+        "approvesUpdateThis": "{user} updated approvers of this {entityType}"
+    }
+}

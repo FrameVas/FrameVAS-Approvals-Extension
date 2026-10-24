@@ -1,0 +1,75 @@
+{
+    "labels": {
+        "Approve": "Погодити",
+        "Decline": "Відхилити",
+        "Add Approver": "Додати погоджувача",
+        "Waiting": "Очікує черги",
+        "No approvers": "Немає погоджувачів",
+        "Comment": "Коментар",
+        "Add Stage": "Додати етап",
+        "Done": "Завершено",
+        "Current": "Поточний",
+        "Added": "Додано",
+        "Removed": "Видалено",
+        "Moved": "Переміщено",
+        "Me": "Я",
+        "Approver": "Погоджувач",
+        "Stage": "Етап",
+        "Status": "Статус",
+        "Decision Date": "Дата рішення",
+        "Signature": "Підпис"
+    },
+    "messages": {
+        "approvesRequested": "Потрібне ваше погодження: {entityType} {entity}",
+        "approvesApproved": "{user} — погоджено {entityType} {entity}",
+        "approvesDeclined": "{user} — відхилено {entityType} {entity}",
+        "approvesNotAllowed": "Ви не можете зараз погодити або відхилити цей запис.",
+        "approvesDone": "Ваше рішення збережено.",
+        "approvesConfirmApprove": "Погодити цей запис?",
+        "approvesConfirmDecline": "Відхилити цей запис?",
+        "approvesMore": "ще {count}",
+        "approvesStage": "Етап {number}",
+        "approvesMoveToPreviousStage": "Перемістити на попередній етап",
+        "approvesMoveToNextStage": "Перемістити на наступний етап"
+    },
+    "options": {
+        "approvesStatus": {
+            "": "Немає",
+            "Pending": "Очікує",
+            "Approved": "Погоджено",
+            "Declined": "Відхилено"
+        },
+        "approvesSearchType": {
+            "anyOf": "Містить будь-кого з",
+            "allOf": "Містить усіх",
+            "noneOf": "Не містить",
+            "approvedBy": "Погоджено користувачем",
+            "declinedBy": "Відхилено користувачем",
+            "waitingFor": "Очікує рішення від"
+        }
+    },
+    "streamMessages": {
+        "approvesApprove": "{user} — погоджено {entityType} {entity}",
+        "approvesApproveThis": "{user} — погоджено цей запис",
+        "approvesDecline": "{user} — відхилено {entityType} {entity}",
+        "approvesDeclineThis": "{user} — відхилено цей запис",
+        "approvesUpdate": "{user} — змінено погоджувачів {entityType} {entity}",
+        "approvesUpdateThis": "{user} — змінено погоджувачів цього запису"
+    },
+    "streamMessagesMale": {
+        "approvesApprove": "{user} погодив {entityType} {entity}",
+        "approvesApproveThis": "{user} погодив цей запис",
+        "approvesDecline": "{user} відхилив {entityType} {entity}",
+        "approvesDeclineThis": "{user} відхилив цей запис",
+        "approvesUpdate": "{user} змінив погоджувачів {entityType} {entity}",
+        "approvesUpdateThis": "{user} змінив погоджувачів цього запису"
+    },
+    "streamMessagesFemale": {
+        "approvesApprove": "{user} погодила {entityType} {entity}",
+        "approvesApproveThis": "{user} погодила цей запис",
+        "approvesDecline": "{user} відхилила {entityType} {entity}",
+        "approvesDeclineThis": "{user} відхилила цей запис",
+        "approvesUpdate": "{user} змінила погоджувачів {entityType} {entity}",
+        "approvesUpdateThis": "{user} змінила погоджувачів цього запису"
+    }
+}

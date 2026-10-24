@@ -1,0 +1,5 @@
+{
+    "itemViews": {
+        "Approval": "approvals:views/stream/notes/approval"
+    }
+}

@@ -1,0 +1,29 @@
+{
+    "fieldTypes": {
+        "approves": "Approves"
+    },
+    "fields": {
+        "approveCommentDisabled": "Hide Comment on Approve",
+        "declineCommentDisabled": "Hide Comment on Decline",
+        "listDisplay": "List View Display",
+        "approvalMode": "Approval Mode",
+        "approvalsAudited": "Audited",
+        "actionsPosition": "Approve/Decline Buttons Position"
+    },
+    "options": {
+        "approvesListDisplay": {
+            "summary": "Summary",
+            "approvers": "Approvers",
+            "both": "Summary + Approvers"
+        },
+        "approvesApprovalMode": {
+            "parallel": "Parallel",
+            "stages": "Stages"
+        },
+        "approvesActionsPosition": {
+            "bottom": "Below the approvers",
+            "top": "Above the approvers",
+            "header": "Record header (next to Edit)"
+        }
+    }
+}
