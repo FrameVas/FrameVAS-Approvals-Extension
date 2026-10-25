@@ -1,4 +1,4 @@
-# FrameVAS – Approvals Lite для EspoCRM
+# FrameVAS – Approvals Lite for EspoCRM
 
 ![EspoCRM 9.0+](https://img.shields.io/badge/EspoCRM-9.0%2B-2f6bb3)
 ![PHP 8.3+](https://img.shields.io/badge/PHP-8.3%2B-777bb4)
