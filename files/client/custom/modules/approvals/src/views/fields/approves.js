@@ -241,7 +241,7 @@ define('approvals:views/fields/approves', ['views/fields/base'], (BaseFieldView)
         async actionSearchAdd() {
             Espo.Ui.notifyWait();
 
-            const view = await this.createView('modal', 'views/modals/select-records', {
+            const view = await this.createView('modal', 'approvals:views/modals/select-users', {
                 entityType: 'User',
                 multiple: true,
                 createButton: false,
@@ -627,7 +627,7 @@ define('approvals:views/fields/approves', ['views/fields/base'], (BaseFieldView)
         async actionAdd(stage) {
             Espo.Ui.notifyWait();
 
-            const view = await this.createView('modal', 'views/modals/select-records', {
+            const view = await this.createView('modal', 'approvals:views/modals/select-users', {
                 entityType: 'User',
                 multiple: true,
                 createButton: false,
