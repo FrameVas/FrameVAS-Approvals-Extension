@@ -82,10 +82,19 @@ define('approvals:views/fields/approves', ['views/fields/base'], (BaseFieldView)
                                     {{else}}
                                         <span class="label label-{{style}}">{{statusLabel}}</span>
                                     {{/if}}
+                                    {{#if byDeputyText}}
+                                        <span class="text-muted small">{{byDeputyText}}</span>
+                                    {{/if}}
                                     {{#if resolvedAtDisplay}}
                                         <span class="text-muted small">{{resolvedAtDisplay}}</span>
                                     {{/if}}
                                 </div>
+                                {{#if deputyName}}
+                                    <div class="text-muted small approves-deputy" style="padding-left: 20px;">
+                                        {{translate 'Deputy'}}:
+                                        <a href="#User/view/{{deputyId}}" data-id="{{deputyId}}" data-scope="User">{{deputyName}}</a>
+                                    </div>
+                                {{/if}}
                                 {{#if comment}}
                                     <div class="text-muted small" style="white-space: pre-wrap; padding-left: 20px;">{{comment}}</div>
                                 {{/if}}
@@ -131,6 +140,19 @@ define('approvals:views/fields/approves', ['views/fields/base'], (BaseFieldView)
                                 {{#unless isPending}}
                                     <span class="label label-{{style}}">{{statusLabel}}</span>
                                 {{/unless}}
+                                {{#if ../../deputiesAllowed}}
+                                    <div class="small approves-deputy" style="margin-top: 2px;">
+                                        {{#if deputyName}}
+                                            <span class="text-muted">{{translate 'Deputy'}}:</span> {{deputyName}}
+                                            <a role="button" tabindex="0" data-action="approvesRemoveDeputy" data-id="{{id}}"
+                                                title="{{translate 'Remove Deputy'}}" style="margin-left: 4px;"><span class="fas fa-times"></span></a>
+                                        {{else}}
+                                            <a role="button" tabindex="0" data-action="approvesAddDeputy" data-id="{{id}}">
+                                                <span class="fas fa-plus"></span> {{translate 'Add Deputy'}}
+                                            </a>
+                                        {{/if}}
+                                    </div>
+                                {{/if}}
                             </div>
                         {{/each}}
                     </div>
@@ -192,6 +214,10 @@ define('approvals:views/fields/approves', ['views/fields/base'], (BaseFieldView)
             this.addActionHandler('approvesAdd', (e, target) => this.actionAdd(parseInt(target.dataset.stage) || 1));
             this.addActionHandler('approvesAddStage', () => this.addStage());
             this.addActionHandler('approvesRemove', (e, target) => this.removeItem(target.dataset.id));
+            this.addActionHandler('approvesAddDeputy', (e, target) => this.actionAddDeputy(target.dataset.id));
+            this.addActionHandler('approvesRemoveDeputy', (e, target) => this.setDeputy(target.dataset.id, null, null));
+
+            this.deputiesAllowed = !!this.params.deputiesAllowed;
             this.addActionHandler('approvesMoveUp', (e, target) => this.moveToStage(target.dataset.id, -1));
             this.addActionHandler('approvesMoveDown', (e, target) => this.moveToStage(target.dataset.id, 1));
             this.addActionHandler('approvesResolve', (e, target) => this.actionResolve(target.dataset.value));
@@ -491,10 +517,21 @@ define('approvals:views/fields/approves', ['views/fields/base'], (BaseFieldView)
 
             const currentStage = this.getCurrentStage(items);
 
-            return items
+            const ids = [];
+
+            items
                 .filter(item => item.status === 'Pending')
                 .filter(item => !this.isStages() || item.stage === currentStage)
-                .map(item => item.id);
+                .forEach(item => {
+                    ids.push(item.id);
+
+                    // The approver's deputy can act on the same item.
+                    if (this.deputiesAllowed && item.deputyId) {
+                        ids.push(item.deputyId);
+                    }
+                });
+
+            return ids;
         }
 
         data() {
@@ -519,9 +556,18 @@ define('approvals:views/fields/approves', ['views/fields/base'], (BaseFieldView)
                 const statusLabel = this.getStatusTranslation(item.status);
                 const resolvedAtDisplay = item.resolvedAt ? this.getDateTime().toDisplay(item.resolvedAt) : null;
 
+                const deputyName = this.deputiesAllowed && item.deputyId ? (item.deputyName || item.deputyId) : null;
+
+                // Set when the deputy decided instead of the approver.
+                const byDeputyText = item.status !== 'Pending' && item.resolvedById && item.resolvedById !== item.id ?
+                    this.translate('approvesByDeputy', 'messages').replace('{name}', item.resolvedByName || '') : null;
+
                 return {
                     id: item.id,
                     name: item.name || item.id,
+                    deputyId: deputyName ? item.deputyId : null,
+                    deputyName: deputyName,
+                    byDeputyText: byDeputyText,
                     stage: item.stage,
                     isPending: item.status === 'Pending',
                     isWaiting: isWaiting,
@@ -532,7 +578,9 @@ define('approvals:views/fields/approves', ['views/fields/base'], (BaseFieldView)
                     comment: item.comment || null,
                     tooltip: [
                         isStages ? this.getStageTitle(item.stage) : null,
+                        deputyName ? this.translate('Deputy') + ': ' + deputyName : null,
                         isWaiting ? this.translate('Waiting') : statusLabel,
+                        byDeputyText,
                         resolvedAtDisplay,
                         item.comment,
                     ].filter(part => part).join(' · '),
@@ -559,6 +607,7 @@ define('approvals:views/fields/approves', ['views/fields/base'], (BaseFieldView)
                 ...super.data(),
                 itemList: itemList,
                 isStages: isStages,
+                deputiesAllowed: this.deputiesAllowed,
                 showStageNumbers: isStages && new Set(itemList.map(item => item.stage)).size > 1,
                 groupList: groupList,
                 // Hidden while the record form is in edit mode: a decision reloads the record,
@@ -661,6 +710,44 @@ define('approvals:views/fields/approves', ['views/fields/base'], (BaseFieldView)
             this.stageCount++;
 
             this.reRender();
+        }
+
+        async actionAddDeputy(id) {
+            Espo.Ui.notifyWait();
+
+            const view = await this.createView('modal', 'approvals:views/modals/select-users', {
+                entityType: 'User',
+                multiple: false,
+                createButton: false,
+                primaryFilterName: 'active',
+                onSelect: selected => {
+                    const model = Array.isArray(selected) ? selected[0] : selected;
+
+                    // An approver can't be their own deputy.
+                    if (!model || model.id === id) {
+                        return;
+                    }
+
+                    this.setDeputy(id, model.id, model.get('name'));
+                },
+            });
+
+            await view.render();
+
+            Espo.Ui.notify(false);
+        }
+
+        setDeputy(id, deputyId, deputyName) {
+            const item = this.items.find(item => item.id === id);
+
+            if (!item) {
+                return;
+            }
+
+            item.deputyId = deputyId;
+            item.deputyName = deputyName;
+
+            this.onItemsChanged();
         }
 
         removeItem(id) {

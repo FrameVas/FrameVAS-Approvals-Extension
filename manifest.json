@@ -2,12 +2,12 @@
     "name": "FrameVAS - Approvals Lite",
     "description": "Adds the 'Approves' field type to EspoCRM: a list of users who must approve a record, with Approve/Decline actions, notifications and an overall approval status. English and Ukrainian included.",
     "author": "FrameVAS - Artem Vasylenko",
-    "version": "1.0.4",
+    "version": "1.1.0",
     "acceptableVersions": [
         ">=9.0.0"
     ],
     "php": [
         ">=8.3"
     ],
-    "releaseDate": "2026-10-24"
+    "releaseDate": "2026-11-21"
     }

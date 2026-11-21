@@ -18,6 +18,12 @@
             "tooltip": true
         },
         {
+            "name": "deputiesAllowed",
+            "type": "bool",
+            "default": false,
+            "tooltip": true
+        },
+        {
             "name": "approveCommentDisabled",
             "type": "bool",
             "default": false,

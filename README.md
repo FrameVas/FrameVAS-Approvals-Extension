@@ -11,6 +11,7 @@ Approvals Lite adds a new field type, **Approves**, to EspoCRM. Add it to any en
 ## Features
 
 - **Approves field type** – add it to any entity in the Entity Manager, like any other field.
+- **Deputy** – add deputy to selected Approvals.
 - **Two approval modes** – *Parallel* (everyone approves in any order) or *Stages* (stage 2 starts only after everyone in stage 1 has approved).
 - **Approve / Decline buttons** – shown only to the user whose turn it is, with an optional comment.
 - **Overall status field** – `Pending`, `Approved` or `Declined`, created automatically; usable in filters, Kanban, reports, workflows and BPM.

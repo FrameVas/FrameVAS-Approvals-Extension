@@ -8,7 +8,8 @@
         "listDisplay": "Відображення у списку",
         "approvalMode": "Режим погодження",
         "approvalsAudited": "Аудит",
-        "actionsPosition": "Розташування кнопок «Погодити/Відхилити»"
+        "actionsPosition": "Розташування кнопок «Погодити/Відхилити»",
+        "deputiesAllowed": "Дозволити заступників"
     },
     "options": {
         "approvesListDisplay": {

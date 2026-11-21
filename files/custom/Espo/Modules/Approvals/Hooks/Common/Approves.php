@@ -120,7 +120,10 @@ class Approves implements BeforeSave, AfterSave
             $previousMap[$item->id] = $item;
         }
 
-        $names = $this->getActiveUserNames(array_map(fn ($item) => $item->id, $list));
+        $names = $this->getActiveUserNames(array_values(array_filter(array_merge(
+            array_map(fn ($item) => $item->id, $list),
+            array_map(fn ($item) => $item->deputyId ?? null, $list)
+        ))));
 
         $result = [];
 
@@ -128,9 +131,11 @@ class Approves implements BeforeSave, AfterSave
             $old = $previousMap[$item->id] ?? null;
 
             if ($old) {
-                // An existing approver: keep the saved decision.
+                // An existing approver: keep the saved decision and who made it.
                 $item->status = $old->status;
                 $item->resolvedAt = $old->resolvedAt;
+                $item->resolvedById = $old->resolvedById ?? null;
+                $item->resolvedByName = $old->resolvedByName ?? null;
                 $item->comment = $old->comment;
             } else {
                 // A new approver: must be an existing active user, and starts as pending.
@@ -140,10 +145,20 @@ class Approves implements BeforeSave, AfterSave
 
                 $item->status = Util::STATUS_PENDING;
                 $item->resolvedAt = null;
+                $item->resolvedById = null;
+                $item->resolvedByName = null;
                 $item->comment = null;
             }
 
             $item->name = $names[$item->id] ?? $old?->name ?? $item->name;
+
+            // A deputy can be added, changed or removed at any time; it must be an active user.
+            if (($item->deputyId ?? null) && array_key_exists($item->deputyId, $names)) {
+                $item->deputyName = $names[$item->deputyId];
+            } else {
+                $item->deputyId = null;
+                $item->deputyName = null;
+            }
 
             $result[] = $item;
         }

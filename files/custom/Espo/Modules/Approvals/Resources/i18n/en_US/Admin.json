@@ -8,7 +8,8 @@
         "listDisplay": "List View Display",
         "approvalMode": "Approval Mode",
         "approvalsAudited": "Audited",
-        "actionsPosition": "Approve/Decline Buttons Position"
+        "actionsPosition": "Approve/Decline Buttons Position",
+        "deputiesAllowed": "Allow Deputies"
     },
     "options": {
         "approvesListDisplay": {

@@ -88,7 +88,20 @@ class Util
      */
     public function normalizeForField(string $entityType, string $field, mixed $value): array
     {
-        return $this->normalize($value, $this->isLegacySequential($entityType, $field));
+        return $this->normalize(
+            $value,
+            $this->isLegacySequential($entityType, $field),
+            $this->areDeputiesAllowed($entityType, $field)
+        );
+    }
+
+    /**
+     * The 'Allow Deputies' option. When off, deputies are ignored everywhere (they can't act,
+     * aren't notified or shown), so turning the option off later is safe.
+     */
+    public function areDeputiesAllowed(string $entityType, string $field): bool
+    {
+        return (bool) $this->metadata->get(['entityDefs', $entityType, 'fields', $field, 'deputiesAllowed']);
     }
 
     /**
@@ -127,13 +140,17 @@ class Util
      */
     public function buildIndex(array $list, string $mode): string
     {
-        $activeIds = $this->getActiveIds($list, $mode);
+        $activeItemIds = array_map(fn ($item) => $item->id, $this->getActiveItems($list, $mode));
 
         $index = '';
 
         foreach ($list as $item) {
-            $index .= '|' . $item->id . ':' . $item->status . ':' .
-                (in_array($item->id, $activeIds, true) ? 'A' : 'W') . '|';
+            $flag = in_array($item->id, $activeItemIds, true) ? 'A' : 'W';
+
+            // A deputy is indexed like the approver, so filters treat them as an approver of this item.
+            foreach (array_filter([$item->id, $item->deputyId ?? null]) as $userId) {
+                $index .= '|' . $userId . ':' . $item->status . ':' . $flag . '|';
+            }
         }
 
         return $index;
@@ -145,7 +162,7 @@ class Util
      *
      * @return stdClass[]
      */
-    public function normalize(mixed $value, bool $legacySequential = false): array
+    public function normalize(mixed $value, bool $legacySequential = false, bool $allowDeputies = true): array
     {
         if (!is_array($value)) {
             return [];
@@ -183,12 +200,26 @@ class Util
                     ($legacySequential ? count($list) + 1 : 1);
             }
 
+            $deputyId = $allowDeputies && is_string($raw->deputyId ?? null) && $raw->deputyId !== '' &&
+                $raw->deputyId !== $id ? $raw->deputyId : null;
+
+            $isResolved = $status !== self::STATUS_PENDING;
+
+            // Who actually decided: the approver or the deputy. Unknown for decisions made before 1.1.
+            $resolvedById = $isResolved && is_string($raw->resolvedById ?? null) && $raw->resolvedById !== '' ?
+                $raw->resolvedById : null;
+
             $list[] = (object) [
                 'id' => $id,
                 'stage' => $stage,
                 'name' => is_string($raw->name ?? null) ? $raw->name : null,
+                'deputyId' => $deputyId,
+                'deputyName' => $deputyId && is_string($raw->deputyName ?? null) ? $raw->deputyName : null,
                 'status' => $status,
                 'resolvedAt' => is_string($raw->resolvedAt ?? null) ? $raw->resolvedAt : null,
+                'resolvedById' => $resolvedById,
+                'resolvedByName' => $resolvedById && is_string($raw->resolvedByName ?? null) ?
+                    $raw->resolvedByName : null,
                 'comment' => $this->cleanComment($raw->comment ?? null),
             ];
         }
@@ -263,7 +294,7 @@ class Util
     }
 
     /**
-     * IDs of users who can approve or decline right now.
+     * IDs of users who can approve or decline right now: approvers and their deputies.
      * Nobody can act once someone has declined.
      * In stages mode only pending approvers of the current stage can act. The current stage is
      * the first one with pending approvers: all earlier stages are fully approved.
@@ -277,6 +308,32 @@ class Util
             return [];
         }
 
+        $ids = [];
+
+        foreach ($this->getActiveItems($list, $mode) as $item) {
+            $ids[] = $item->id;
+
+            if ($item->deputyId ?? null) {
+                $ids[] = $item->deputyId;
+            }
+        }
+
+        return array_values(array_unique($ids));
+    }
+
+    /**
+     * Approver items that can be decided right now: pending, and in Stages mode in the current stage.
+     * Each can be decided by its approver or by its deputy.
+     *
+     * @param stdClass[] $list
+     * @return stdClass[]
+     */
+    public function getActiveItems(array $list, string $mode): array
+    {
+        if ($this->computeStatus($list) !== self::STATUS_PENDING) {
+            return [];
+        }
+
         $pending = array_filter($list, fn ($item) => $item->status === self::STATUS_PENDING);
 
         if ($mode === self::MODE_STAGES) {
@@ -285,6 +342,6 @@ class Util
             $pending = array_filter($pending, fn ($item) => $item->stage === $currentStage);
         }
 
-        return array_values(array_map(fn ($item) => $item->id, $pending));
+        return array_values($pending);
     }
 }

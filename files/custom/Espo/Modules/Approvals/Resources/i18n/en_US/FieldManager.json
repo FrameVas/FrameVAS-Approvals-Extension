@@ -5,7 +5,8 @@
         "listDisplay": "How the field looks in list views. Summary: the counter, like \"1/3 Pending\". Approvers: each user's name as a colored label. Summary + Approvers: both.",
         "approvalMode": "Parallel: all approvers can act at the same time, in any order. Stages: approvers are grouped into stages. A stage starts when everyone in the previous stage has approved.",
         "approvalsAudited": "If checked, the Stream logs each decision (with the stage and comment) and each change to the approver list.",
-        "actionsPosition": "Where the Approve and Decline buttons are shown on the record's detail view."
+        "actionsPosition": "Where the Approve and Decline buttons are shown on the record's detail view.",
+        "deputiesAllowed": "If checked, each approver can have a deputy. The approver or the deputy can approve or decline; it counts as one decision."
     },
     "fieldParts": {
         "approves": {

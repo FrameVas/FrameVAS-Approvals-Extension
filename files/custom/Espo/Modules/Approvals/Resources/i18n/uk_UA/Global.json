@@ -17,7 +17,12 @@
         "Stage": "Етап",
         "Status": "Статус",
         "Decision Date": "Дата рішення",
-        "Signature": "Підпис"
+        "Signature": "Підпис",
+        "Deputy": "Заступник",
+        "Add Deputy": "Додати заступника",
+        "Remove Deputy": "Видалити заступника",
+        "Decided By": "Хто вирішив",
+        "Deputies": "Заступники"
     },
     "messages": {
         "approvesRequested": "Потрібне ваше погодження: {entityType} {entity}",
@@ -30,7 +35,9 @@
         "approvesMore": "ще {count}",
         "approvesStage": "Етап {number}",
         "approvesMoveToPreviousStage": "Перемістити на попередній етап",
-        "approvesMoveToNextStage": "Перемістити на наступний етап"
+        "approvesMoveToNextStage": "Перемістити на наступний етап",
+        "approvesByDeputy": "заступник: {name}",
+        "approvesOnBehalfOf": "від імені: {name}"
     },
     "options": {
         "approvesStatus": {

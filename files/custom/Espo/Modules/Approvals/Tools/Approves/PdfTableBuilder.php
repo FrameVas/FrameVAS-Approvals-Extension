@@ -16,6 +16,8 @@ use Throwable;
  *   number     row number
  *   stage      stage number
  *   approver   user name
+ *   deputy     the approver's deputy
+ *   decidedBy  who decided: the approver or the deputy
  *   title      user's Title field
  *   status     decision (translated)
  *   date       decision date
@@ -27,7 +29,9 @@ use Throwable;
  */
 class PdfTableBuilder
 {
-    private const BUILT_IN = ['number', 'stage', 'approver', 'title', 'status', 'date', 'comment', 'signature'];
+    private const BUILT_IN = [
+        'number', 'stage', 'approver', 'deputy', 'title', 'status', 'decidedBy', 'date', 'comment', 'signature',
+    ];
 
     // Never hidden as empty: they are the core of the table, or empty by design.
     private const ALWAYS_SHOWN = ['number', 'approver', 'status', 'signature'];
@@ -43,11 +47,12 @@ class PdfTableBuilder
     ) {}
 
     /**
-     * The default columns: stage (in stages mode), approver, title, status, date, comment.
+     * The default columns: stage (in stages mode), approver, deputy, title, status, date, comment.
+     * Deputy, Title and Comment are hidden when empty for everyone.
      */
     public function getDefaultColumns(bool $isStages): string
     {
-        return ($isStages ? 'stage,' : '') . 'approver,title,status,date,comment';
+        return ($isStages ? 'stage,' : '') . 'approver,deputy,title,status,date,comment';
     }
 
     /**
@@ -171,6 +176,8 @@ class PdfTableBuilder
             'number' => '№',
             'stage' => $this->language->translateLabel('Stage'),
             'approver' => $this->language->translateLabel('Approver'),
+            'deputy' => $this->language->translateLabel('Deputy'),
+            'decidedBy' => $this->language->translateLabel('Decided By'),
             'status' => $this->language->translateLabel('Status'),
             'date' => $this->language->translateLabel('Decision Date'),
             'comment' => $this->language->translateLabel('Comment'),
@@ -189,6 +196,8 @@ class PdfTableBuilder
             'number' => (string) ($index + 1),
             'stage' => !empty($item['stageLabel']) ? (string) $item['stage'] : '',
             'approver' => (string) ($item['name'] ?? ''),
+            'deputy' => (string) ($item['deputy'] ?? ''),
+            'decidedBy' => (string) ($item['decidedBy'] ?? ''),
             'title' => (string) ($item['title'] ?? ''),
             'status' => (string) ($item['status'] ?? ''),
             'date' => (string) ($item['resolvedAt'] ?? ''),

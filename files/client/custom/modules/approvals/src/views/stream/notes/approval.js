@@ -20,7 +20,7 @@ define('approvals:views/stream/notes/approval', ['views/stream/note'], (NoteStre
                 {{#if isDecision}}
                     <div>
                         <span class="label label-{{style}}">{{statusLabel}}</span>
-                        <span class="text-muted small">{{fieldLabel}}{{#if stageText}} · {{stageText}}{{/if}}</span>
+                        <span class="text-muted small">{{fieldLabel}}{{#if stageText}} · {{stageText}}{{/if}}{{#if onBehalfOfText}} · {{onBehalfOfText}}{{/if}}</span>
                     </div>
                     {{#if comment}}
                         <div style="white-space: pre-wrap; margin-top: 4px;">{{comment}}</div>
@@ -64,7 +64,9 @@ define('approvals:views/stream/notes/approval', ['views/stream/note'], (NoteStre
             const stageText = number => number ?
                 this.translate('approvesStage', 'messages').replace('{number}', number) : null;
 
-            const describe = item => item.name + (item.stage ? ' (' + stageText(item.stage) + ')' : '');
+            const describe = item => item.name +
+                (item.stage ? ' (' + stageText(item.stage) + ')' : '') +
+                (item.deputyName ? ' + ' + this.translate('Deputy') + ': ' + item.deputyName : '');
 
             const changeList = [];
 
@@ -74,6 +76,15 @@ define('approvals:views/stream/notes/approval', ['views/stream/note'], (NoteStre
 
             if ((data.removed || []).length) {
                 changeList.push({label: this.translate('Removed'), text: data.removed.map(describe).join(', ')});
+            }
+
+            if ((data.deputies || []).length) {
+                changeList.push({
+                    label: this.translate('Deputies'),
+                    text: data.deputies
+                        .map(item => item.name + ': ' + (item.from || '—') + ' → ' + (item.to || '—'))
+                        .join(', '),
+                });
             }
 
             if ((data.moved || []).length) {
@@ -92,6 +103,8 @@ define('approvals:views/stream/notes/approval', ['views/stream/note'], (NoteStre
                 style: data.action === 'approve' ? 'success' : 'danger',
                 statusLabel: statusMap[status] || status,
                 stageText: stageText(data.stage),
+                onBehalfOfText: data.onBehalfOfName ?
+                    this.translate('approvesOnBehalfOf', 'messages').replace('{name}', data.onBehalfOfName) : null,
                 comment: data.comment || null,
                 fieldLabel: data.field ? this.translate(data.field, 'fields', parentType) : '',
                 changeList: changeList,

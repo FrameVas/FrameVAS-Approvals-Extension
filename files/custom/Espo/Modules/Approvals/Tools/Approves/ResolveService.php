@@ -77,14 +77,23 @@ class ResolveService
 
         $status = $action === self::ACTION_APPROVE ? Util::STATUS_APPROVED : Util::STATUS_DECLINED;
 
-        foreach ($list as $item) {
-            if ($item->id !== $this->user->getId()) {
+        $userId = $this->user->getId();
+
+        // The items this user decides now: as the approver, or as the approver's deputy.
+        $resolvedIds = [];
+
+        foreach ($this->util->getActiveItems($list, $this->util->getMode($entityType, $field)) as $item) {
+            if ($item->id !== $userId && ($item->deputyId ?? null) !== $userId) {
                 continue;
             }
 
             $item->status = $status;
             $item->resolvedAt = DateTime::createNow()->toString();
+            $item->resolvedById = $userId;
+            $item->resolvedByName = $this->user->get('name');
             $item->comment = $this->util->cleanComment($comment);
+
+            $resolvedIds[] = $item->id;
         }
 
         $entity->set($field, $list);
@@ -94,7 +103,7 @@ class ResolveService
         $this->notifier->notifyDecision($entity, $status, $this->user);
 
         foreach ($this->util->normalizeForField($entityType, $field, $entity->get($field)) as $item) {
-            if ($item->id === $this->user->getId()) {
+            if (in_array($item->id, $resolvedIds, true)) {
                 $this->streamLogger->logDecision($entity, $field, $item);
             }
         }

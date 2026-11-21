@@ -17,7 +17,12 @@
         "Stage": "Stage",
         "Status": "Status",
         "Decision Date": "Decision Date",
-        "Signature": "Signature"
+        "Signature": "Signature",
+        "Deputy": "Deputy",
+        "Add Deputy": "Add Deputy",
+        "Remove Deputy": "Remove Deputy",
+        "Decided By": "Decided By",
+        "Deputies": "Deputies"
     },
     "messages": {
         "approvesRequested": "Your approval is needed: {entityType} {entity}",
@@ -30,7 +35,9 @@
         "approvesMore": "+{count} more",
         "approvesStage": "Stage {number}",
         "approvesMoveToPreviousStage": "Move to previous stage",
-        "approvesMoveToNextStage": "Move to next stage"
+        "approvesMoveToNextStage": "Move to next stage",
+        "approvesByDeputy": "by {name} (deputy)",
+        "approvesOnBehalfOf": "on behalf of {name}"
     },
     "options": {
         "approvesStatus": {

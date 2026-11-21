@@ -49,6 +49,9 @@ class StreamLogger
             'action' => $item->status === Util::STATUS_APPROVED ? self::ACTION_APPROVE : self::ACTION_DECLINE,
             'stage' => $isStages ? $item->stage : null,
             'comment' => $item->comment,
+            // Set when the deputy decided: the approver they acted for.
+            'onBehalfOfName' => ($item->resolvedById ?? null) && $item->resolvedById !== $item->id ?
+                $item->name : null,
         ]);
     }
 
@@ -76,6 +79,7 @@ class StreamLogger
 
         $added = [];
         $moved = [];
+        $deputies = [];
 
         foreach ($current as $item) {
             $old = $previousMap[$item->id] ?? null;
@@ -84,6 +88,15 @@ class StreamLogger
                 $added[] = $this->describe($item, $isStages);
 
                 continue;
+            }
+
+            if (($old->deputyId ?? null) !== ($item->deputyId ?? null)) {
+                $deputies[] = [
+                    'id' => $item->id,
+                    'name' => $item->name,
+                    'from' => $old->deputyName ?? null,
+                    'to' => $item->deputyName ?? null,
+                ];
             }
 
             if ($isStages && $old->stage !== $item->stage) {
@@ -104,7 +117,7 @@ class StreamLogger
             }
         }
 
-        if (!$added && !$removed && !$moved) {
+        if (!$added && !$removed && !$moved && !$deputies) {
             return;
         }
 
@@ -114,6 +127,7 @@ class StreamLogger
             'added' => $added,
             'removed' => $removed,
             'moved' => $moved,
+            'deputies' => $deputies,
         ]);
     }
 
@@ -126,6 +140,7 @@ class StreamLogger
             'id' => $item->id,
             'name' => $item->name,
             'stage' => $isStages ? $item->stage : null,
+            'deputyName' => $item->deputyName ?? null,
         ];
     }
 

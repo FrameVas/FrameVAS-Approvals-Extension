@@ -19,7 +19,8 @@ use Throwable;
  *
  * {{field}}                    Text: "Name (Status), Name (Status)".
  * {{{fieldTable}}}             A ready-made HTML table.
- * {{#each fieldList}}...{{/each}}  A loop. Item keys: name, title, status, statusRaw, stage, stageLabel,
+ * {{#each fieldList}}...{{/each}}  A loop. Item keys: name, title, deputy, decidedBy, isDecidedByDeputy,
+ *                              status, statusRaw, stage, stageLabel,
  *                              resolvedAt, comment, isApproved, isDeclined, isPending, isWaiting.
  *
  * Columns that are empty for everyone (e.g. Title) are hidden.
@@ -67,13 +68,24 @@ class ApprovesDataLoader implements DataLoader
                 $isWaiting = $isStages && $isPendingOverall &&
                     $item->status === Util::STATUS_PENDING && !in_array($item->id, $activeIds, true);
 
+                $isByDeputy = ($item->resolvedById ?? null) && $item->resolvedById !== $item->id;
+
+                $status = $isWaiting ?
+                    $this->language->translateLabel('Waiting') :
+                    $this->translateStatus($item->status);
+
+                if ($isByDeputy && $item->resolvedByName) {
+                    $status .= ' — ' . $item->resolvedByName;
+                }
+
                 $items[] = [
                     'id' => $item->id,
                     'name' => (string) $item->name,
+                    'deputy' => (string) ($item->deputyName ?? ''),
+                    'decidedBy' => (string) ($item->resolvedByName ?? ''),
+                    'isDecidedByDeputy' => $isByDeputy,
                     'title' => $titles[$item->id] ?? '',
-                    'status' => $isWaiting ?
-                        $this->language->translateLabel('Waiting') :
-                        $this->translateStatus($item->status),
+                    'status' => $status,
                     'statusRaw' => $item->status,
                     'stage' => $item->stage,
                     'stageLabel' => $isStages ? $this->stageLabel($item->stage) : '',
